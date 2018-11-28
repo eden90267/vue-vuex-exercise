@@ -48,7 +48,7 @@
               <!-- 禮品 -->
               <div class="col-md-4 mb-4" v-for="(item) in filterData" :key="item.id">
                 <div class="card border-0 box-shadow text-center h-100">
-                  <img class="card-img-top" :src="item.image" alt="Card image cap">
+                  <img class="card-img-top" :src="item.image || item.imageUrl" alt="Card image cap">
                   <div class="card-body">
                     <h4 class="card-title">{{ item.title }}</h4>
                     <p class="card-text text-left">{{ item.content }}</p>
