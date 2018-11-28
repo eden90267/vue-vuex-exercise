@@ -1,7 +1,6 @@
 <template>
   <div>
     <div class="container main-content mb-3">
-      <Loading :active.sync="isLoading"></Loading>
       <div class="row">
         <div class="col-md-3">
           <!-- 左側選單 (List group) -->
@@ -74,47 +73,39 @@ export default {
   name: 'Home',
   data() {
     return {
-      products: [],
       searchText: '',
-      categories: [],
-      isLoading: false,
     };
   },
   computed: {
     filterData() {
       const vm = this;
       if (vm.searchText) {
-        return vm.products.filter((item) => {
-          const data = item.title.toLowerCase().includes(vm.searchText.toLowerCase());
-          return data;
-        });
+        return vm.products.filter(item =>
+          item.title.toLowerCase().includes(vm.searchText.toLowerCase()));
       }
       return this.products;
+    },
+    products() {
+      return this.$store.state.products;
+    },
+    categories() {
+      return this.$store.state.categories;
     },
   },
   methods: {
     getProducts() {
-      const vm = this;
-      const url = `${process.env.APIPATH}/api/${process.env.CUSTOMPATH}/products/all`;
-      vm.isLoading = true;
-      this.$http.get(url).then((response) => {
-        vm.products = response.data.products;
-        console.log('取得產品列表:', response);
-        vm.getUnique();
-        vm.isLoading = false;
-      });
+      this.$store.dispatch('getProducts');
     },
     addtoCart(id, qty = 1) {
       const vm = this;
       const url = `${process.env.APIPATH}/api/${process.env.CUSTOMPATH}/cart`;
-      vm.isLoading = true;
+      vm.$store.dispatch('updateLoading', true);
       const item = {
         product_id: id,
         qty,
       };
-      vm.isLoading = true;
       this.$http.post(url, { data: item }).then((response) => {
-        vm.isLoading = false;
+        vm.$store.dispatch('updateLoading', false);
         console.log('加入購物車:', response);
       });
     },
