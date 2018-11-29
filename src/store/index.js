@@ -10,6 +10,9 @@ export default new Vuex.Store({
     isLoading: true,
     products: [],
     categories: [],
+    cart: {
+      carts: [],
+    },
   },
   actions: { // 可做非同步的行為
     updateLoading(context, payload) { // context: vuex 固定參數, payload: 外部傳遞過來的參數
@@ -22,6 +25,36 @@ export default new Vuex.Store({
         context.commit('PRODUCTS', response.data.products);
         context.commit('CATEGORIES', response.data.products);
         console.log('取得產品列表:', response);
+        context.commit('LOADING', false);
+      });
+    },
+    getCart(context) {
+      const url = `${process.env.APIPATH}/api/${process.env.CUSTOMPATH}/cart`;
+      context.commit('LOADING', true);
+      axios.get(url).then((response) => {
+        if (response.data.data.carts) {
+          context.commit('CART', response.data.data);
+        }
+        context.commit('LOADING', false);
+      });
+    },
+    removeCart(context, payload) {
+      const url = `${process.env.APIPATH}/api/${process.env.CUSTOMPATH}/cart/${payload}`;
+      context.commit('LOADING', true);
+      axios.delete(url).then(() => {
+        context.dispatch('getCart');
+        context.commit('LOADING', false);
+      });
+    },
+    addtoCart(context, payload) {
+      const url = `${process.env.APIPATH}/api/${process.env.CUSTOMPATH}/cart`;
+      context.commit('LOADING', true);
+      const item = {
+        product_id: payload.id,
+        qty: payload.qty,
+      };
+      axios.post(url, { data: item }).then(() => {
+        context.dispatch('getCart');
         context.commit('LOADING', false);
       });
     },
@@ -39,6 +72,17 @@ export default new Vuex.Store({
         categories.add(item.category);
       });
       state.categories = Array.from(categories);
+    },
+    CART(state, payload) {
+      state.cart = payload;
+    },
+  },
+  getters: { // 類似 computed
+    categories(state) {
+      return state.categories;
+    },
+    products(state) {
+      return state.products;
     },
   },
 });
