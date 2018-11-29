@@ -87,13 +87,14 @@ export default {
       }
       return this.products;
     },
-    ...mapGetters(['categories', 'products']),
+    ...mapGetters('productsModules', ['categories', 'products']),
   },
   methods: {
     addtoCart(id, qty = 1) {
-      this.$store.dispatch('addtoCart', { id, qty });
+      // console.log(this.$store.state.productsModules.products);
+      this.$store.dispatch('cartModules/addtoCart', { id, qty });
     },
-    ...mapActions(['getProducts']), // 有 payload 的 actions 就不行
+    ...mapActions('productsModules', ['getProducts']), // 有 payload 的 actions 就不行
   },
   created() {
     this.getProducts();

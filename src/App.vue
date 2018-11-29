@@ -69,6 +69,8 @@
 </template>
 
 <script>
+import { mapGetters, mapActions } from 'vuex';
+
 export default {
   name: 'App',
   data() {
@@ -76,20 +78,14 @@ export default {
     };
   },
   methods: {
-    getCart() {
-      this.$store.dispatch('getCart');
-    },
     removeCart(id) {
-      this.$store.dispatch('removeCart', id);
+      this.$store.dispatch('cartModules/removeCart', id);
     },
+    ...mapActions('cartModules', ['getCart']),
   },
   computed: {
-    cart() {
-      return this.$store.state.cart;
-    },
-    isLoading() {
-      return this.$store.state.isLoading;
-    },
+    ...mapGetters('cartModules', ['cart']),
+    ...mapGetters(['isLoading']),
   },
   created() {
     this.getCart();
