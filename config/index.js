@@ -50,7 +50,7 @@ module.exports = {
     // Paths
     assetsRoot: path.resolve(__dirname, '../dist'),
     assetsSubDirectory: 'static',
-    assetsPublicPath: '/vue_vuex__exercise/dist',
+    assetsPublicPath: '/vue-vuex-exercise/dist',
 
     /**
      * Source Maps
